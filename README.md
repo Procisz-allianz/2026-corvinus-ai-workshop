@@ -29,6 +29,7 @@ Egyetemi projekt · 1000 fiktív startup · Python + FastAPI + Google Gemini
 - [Érzékenységvizsgálat](#érzékenységvizsgálat)
 - [Korlátok és továbbfejlesztés](#korlátok-és-továbbfejlesztés)
 - [Biztonság](#biztonság)
+- [Workshop-útmutató](#workshop-útmutató)
 - [Jogi megjegyzés](#jogi-megjegyzés)
 
 ---
@@ -289,6 +290,17 @@ Ha a rangsor élbolya robusztus a súlyváltozásra, az erősíti a modell hitel
 - A **Gemini API-kulcs kizárólag a backend `.env` fájljában** legyen; soha ne kerüljön a HTML-be vagy a böngésző JavaScript-kódjába.
 - A feltöltés korlátozva van: csak `.xlsx`/`.xls`, legfeljebb **10 MB**.
 - Éles környezetben állítsd be a `CORS_ORIGIN` változót, és fontold meg az AI-végpontok rate-limitelését.
+
+---
+
+## Workshop-útmutató
+
+A Corvinus AI-szeminárium 3. napi workshopjához angol nyelvű, hallgatóknak szóló útmutató készült (14 oldal, PDF és reszponzív HTML).
+
+- **Feladat:** 5 csapat, csapatonként 6 fő (lead developer, analyst, designer, sales leader, marketing leader és egy joker). A csapatok Gemini segítségével terméket (GUI, skill, agent) fejlesztenek, és befektetőknek adják el (pitch).
+- **Adott a háttér:** API, `main.py`, Gemini és az Excel. Csak a GUI-t építi egyetlen fő, a lead developer.
+- **Fájlok:** `docs/Startup_Intelligence_Workshop_Guide.pdf`, `docs/workshop-guide/guide.html`
+- **Újragenerálás:** `cd docs/workshop-guide && python build_guide.py` (Edge vagy Chrome szükséges a PDF-hez).
 
 ---
 

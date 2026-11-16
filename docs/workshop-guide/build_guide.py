@@ -7,7 +7,7 @@ import diagrams as d
 HERE = pathlib.Path(__file__).resolve().parent
 HTML_FILE = HERE / "guide.html"
 PDF_FILE = HERE.parent / "Startup_Intelligence_Workshop_Guide.pdf"
-TOTAL_PAGES = 12
+TOTAL_PAGES = 14
 
 BROWSER_CANDIDATES = [
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -155,12 +155,14 @@ def cover():
         ("What is in the Excel file?", "#0D9488"),
         ("How the program scores", "#16A34A"),
         ("Risk and weights", "#EA580C"),
-        ("The web page you build", "#DB2777"),
-        ("The role of the AI", "#7C3AED"),
-        ("Your small company: roles", "#0B2A5B"),
+        ("Your product: three parts", "#DB2777"),
+        ("The GUI you build", "#E11D48"),
+        ("The skill and the agent", "#0D9488"),
+        ("The role of the AI (Gemini)", "#7C3AED"),
+        ("Your small company: 6 roles", "#0B2A5B"),
         ("Your mission, phase by phase", "#2563EB"),
         ("Time plan and teamwork", "#0D9488"),
-        ("The presentation", "#16A34A"),
+        ("The investor pitch", "#16A34A"),
         ("Good to know and glossary", "#EA580C"),
     ]
     toc = "".join(f'<li><i style="background:{c}">{i + 1}</i>{name}</li>' for i, (name, c) in enumerate(toc_items))
@@ -169,8 +171,8 @@ def cover():
   <div class="inner">
     <span class="tag">CORVINUS AI SEMINAR · DAY 3 · WORKSHOP</span>
     <h1>Startup<br>Intelligence</h1>
-    <div class="sub">Let us find the most promising startup with the help of artificial intelligence!</div>
-    <div class="chips"><span>⏱️ 2 × 80 minutes</span><span>👥 Teams of 5-7 people</span><span>🏢 You are a small company</span></div>
+    <div class="sub">Build an AI product with Gemini, and sell it to the investors!</div>
+    <div class="chips"><span>⏱️ 2 × 80 minutes</span><span>👥 5 teams of 6 people</span><span>🏢 You are a small company</span></div>
   </div>
   <div class="hero">{d.hero()}</div>
   <div class="toc">
@@ -182,17 +184,17 @@ def cover():
 
 def page_task():
     body = f"""
-<p class="lead">Imagine that your team is a <b>small company that advises investors</b>. You received a big Excel table with the data of <b>1000 young companies</b>. Your company has one single question to answer:</p>
+<p class="lead">Imagine that your team is a <b>small company of 6 people</b>. You build an <b>AI product</b> with the help of Gemini, and then you <b>sell it to investors</b>, like a company that asks for money on the stock exchange. Your product helps to answer one question about a big Excel table with <b>1000 young companies</b>:</p>
 <div class="quote">Which startup deserves our trust the most?</div>
 <div class="grid2">
   <div class="callout blue"><b class="t">🌱 What is a startup?</b>A newly founded business that wants to grow fast. It often spends a lot of money before it makes a profit, so it is hard to tell which one will succeed.</div>
   <div class="callout yellow"><b class="t">🎭 Every company is made up!</b>The numbers are artificial. Nothing real is at stake, but the way of thinking is the same as in real life.</div>
 </div>
-<h3>🗺️ The road from the Excel table to the decision</h3>
+<h3>🗺️ The road from the Excel table to your proof</h3>
 {d.big_picture()}
 <h3>🧩 What is already done, and what do you build?</h3>
 <div style="width:88%;margin:0 auto">{d.architecture()}</div>
-<div class="callout green" style="margin-top:10px"><b class="t">🏁 Your job is the web page!</b>The blue parts (reading the data, scoring, the connection to the AI) are <b>already done</b>. Your company builds the <b>red web page</b> through which everything can be used. Then you decide which startup is the best, and you present it. <b>Only one person in your team writes the page (with the AI's help): the developer.</b> Everyone else has a different job. See page 8.</div>"""
+<div class="callout green" style="margin-top:10px"><b class="t">🏁 Your job is the product!</b>The blue parts (data, scoring, the connection to Gemini) are <b>already done</b>. Your company builds the <b>red GUI</b> plus a <b>skill</b> and an <b>agent</b> (see page 6), then sells it. <b>Only one person writes the GUI with the AI: the lead developer.</b> Everyone else has a different job (page 10).</div>"""
     return page(2, "What is the task?", body)
 
 
@@ -289,12 +291,13 @@ def page_app():
         "📊 <b>Charts:</b> revenue, sectors or the top 5.",
         "🚦 <b>Colored risk light:</b> red, yellow, green in the table.",
         "🔎 <b>Search and filter:</b> by company or by sector.",
-        "✨ <b>Good looks:</b> colors, cards, your own style.",
+        "🧩 <b>Skill and agent buttons:</b> run your skill or agent from the GUI.",
+        "✨ <b>Good looks:</b> your logo, colors and style.",
     ]
     mh = "".join(f'<li>{m}</li>' for m in mins)
     nh = "".join(f'<li>{m}</li>' for m in nices)
     body = f"""
-<p class="lead">The web page is what people see and use: buttons, tables, sliders. It has two levels: what is <b>a must</b>, and what is <b>nice if there is time</b>.</p>
+<p class="lead">The GUI (the web page) is what people see and use: buttons, tables, sliders. It has two levels: what is <b>a must</b>, and what is <b>nice if there is time</b>.</p>
 <div class="two">
   <div class="levels" style="border-color:#E11D48"><div class="lh" style="background:#E11D48">🔴 Minimum: this must work</div><ul>{mh}</ul></div>
   <div class="levels" style="border-color:#7C3AED"><div class="lh" style="background:#7C3AED">⭐ Nice to have: if time remains</div><ul style="font-size:12px">{nh}</ul></div>
@@ -304,9 +307,9 @@ def page_app():
   <div>{d.ranking_wireframe()}<p style="text-align:center;font-size:11.5px;color:#475569;margin-top:4px"><b>Ranking:</b> sliders and a table</p></div>
   <div>{d.chat_wireframe()}<p style="text-align:center;font-size:11.5px;color:#475569;margin-top:4px"><b>Ask the AI:</b> question and answer</p></div>
 </div>
-<div class="callout yellow" style="margin-top:10px"><b class="t">📌 This is only an idea, not a rule</b>The drawings are examples. Feel free to invent your own layout, colors and title!</div>
-<div class="callout blue"><b class="t">🔌 How does the web page get the data?</b>The back end offers "gates" (API): one accepts the Excel file, another gives the ranking, a third answers questions for the AI. After the start you find the list of gates in the browser at the <b>/docs</b> address. <b>The developer gives this page to the AI</b> and asks it to write the web page for it.</div>"""
-    return page(6, "The web page you build", body)
+<div class="callout yellow" style="margin-top:10px"><b class="t">📌 This is only an idea, not a rule</b>The drawings are examples. The designer and the marketing leader can invent their own layout, colors, name and logo!</div>
+<div class="callout blue"><b class="t">🔌 How does the GUI get the data?</b>The back end offers "gates" (API): one accepts the Excel file, another gives the ranking, a third answers questions for the AI. After the start you find the list of gates in the browser at the <b>/docs</b> address. <b>The lead developer gives this page to the AI</b> and asks it to write the GUI for it.</div>"""
+    return page(7, "The GUI you build", body)
 
 
 def page_ai():
@@ -320,7 +323,7 @@ def page_ai():
     ]
     qh = "".join(f'<div class="bubble">💬 {q}</div>' for q in qs)
     body = f"""
-<p class="lead">The AI is a <b>language model</b> (Google Gemini). It is like a very fast, well-read colleague: it reads the data of the 1000 startups and answers your questions. The question box of your web page reaches it.</p>
+<p class="lead">The AI is a <b>language model</b> (Google Gemini). It is like a very fast, well-read colleague: it reads the data of the 1000 startups and answers your questions. The question box of your GUI reaches it, and it also powers your skill and your agent.</p>
 <h3>🔄 What happens when you ask a question?</h3>
 {d.ai_flow()}
 <div class="grid2" style="margin-top:10px">
@@ -335,7 +338,7 @@ def page_ai():
   <div class="card" style="border-color:#DC2626"><h4 style="color:#DC2626">⚠️ Be careful!</h4><p>The AI <b>can be wrong</b> and say a wrong thing with confidence. Always check every important number in the table!</p></div>
 </div>
 <div class="callout yellow" style="margin-top:10px"><b class="t">🔑 The AI needs a secret key</b>The trainer tells you how to set up a key. It is like a password: do not share it, and never put it on a slide!</div>"""
-    return page(7, "The role of the AI", body)
+    return page(9, "The role of the AI (Gemini)", body)
 
 
 def role_card(name, what, ai):
@@ -345,24 +348,22 @@ def role_card(name, what, ai):
 
 def page_roles():
     cards = [
-        role_card("Manager", "Sets goals and deadlines, keeps time, removes blockers and makes the final call.", "asks for a plan and a checklist"),
-        role_card("Developer", "The ONLY person who builds the page. Works from the spec and design. No coding skills needed: you describe, the AI writes.", "builds the page, pastes errors to fix them"),
-        role_card("Spec writer", "Turns ideas into clear written requirements: minimum first, then nice-to-haves. Answers the developer.", "drafts and sharpens the requirements"),
-        role_card("Designer", "Sketches the layout, picks colors and style, reviews the result, later designs the slides.", "asks for layout and color ideas"),
-        role_card("Financial analyst", "Understands the criteria, picks the investor profile and weights, finds the winner, judges risks.", "asks the startup questions in the app"),
-        role_card("Tester", "Writes a checklist from the spec, tests the page, reports bugs, checks the AI's claims.", "turns the spec into a checklist"),
-        role_card("Presenter", "Builds the story, speaks for the team and turns everyone's results into a pitch.", "suggests slide texts and titles"),
+        role_card("Lead developer", "The ONLY person who builds the GUI, and leads the technical work. No coding skills needed: you describe, the AI writes.", "builds the page, pastes errors to fix them"),
+        role_card("Analyst", "Understands the data and the criteria, writes the requirements, the skill and the agent instructions, and checks every number and AI claim.", "drafts instructions, tests the answers"),
+        role_card("Designer", "Sketches the GUI, picks colors and style, makes the logo, and later builds the slides.", "asks for layout, color and logo ideas"),
+        role_card("Sales leader", "Decides who buys the product and for how much, builds the business case and makes the ask to the investors: how much money, for what.", "works out prices and drafts the ask"),
+        role_card("Marketing leader", "Creates the company name, the slogan and the story, and shapes the message so investors remember it.", "suggests names, slogans and story lines"),
+        role_card("Joker", "A free card. The team decides where to place it. It is a second pair of hands wherever you need one.", "whatever the chosen job needs"),
     ]
-    own = '<div class="role" style="background:#F1F5F9;color:#334155;border:2px dashed #94A3B8"><b>✨ Your own role</b><div class="what">Invent another role your company needs, for example customer support or legal.</div></div>'
     body = f"""
-<p class="lead">You are a <b>small company</b>: everybody has a job and depends on the others. Your team has 5 to 7 people, and <b>only one of you is the developer</b>.</p>
+<p class="lead">You are a <b>small company of 6 people</b>: everybody has a job and depends on the others. <b>Only one of you, the lead developer, builds the GUI.</b> If your team has a different size, ask the trainer.</p>
 <div style="width:80%;margin:0 auto">{d.team_chart()}</div>
 <h3 style="margin-top:6px">🔁 How the work flows in a small company</h3>
 <div style="width:80%;margin:0 auto">{d.team_flow()}</div>
 <h3 style="margin-top:8px">🎭 The roles</h3>
-<div class="grid2" style="gap:7px">{"".join(cards)}{own}</div>
-<div class="callout yellow" style="margin-top:10px"><b class="t">👥 How many people are you?</b>5 people: the Manager also presents and the Spec writer also tests. 6 people: add the Tester. 7 people: add the Presenter, so everyone has one role.</div>"""
-    return page(8, "Your small company: roles", body)
+<div class="grid2" style="gap:7px">{"".join(cards)}</div>
+<div class="callout purple" style="margin-top:10px"><b class="t">🃏 Where do you place the Joker?</b>Decide in the first 10 minutes. Ideas: <b>project manager</b> (time and tasks), <b>tester</b> (checks everything works), <b>spec writer</b>, <b>finance expert</b>, <b>customer support</b>, or a <b>second helper</b> for the skill and the agent. Nobody is the boss: agree together how you decide.</div>"""
+    return page(10, "Your small company: 6 roles", body)
 
 
 def phase(n, title, mins, color, items):
@@ -373,106 +374,87 @@ def phase(n, title, mins, color, items):
 def page_tasks():
     ps = [
         phase(1, "Kick-off", 10, d.NAVY, [
-            ("Manager", "Hands out the roles, states the goal: a working page and a winning startup."),
-            ("Developer", "Starts the ready back end with the trainer's guide and opens the <b>/docs</b> page."),
-            ("Spec writer", "Reads the pages about the web page and the AI, with everyone else."),
+            ("Joker", "Chooses the job the team needs most (see page 10) and tells the others."),
+            ("Lead developer", "Starts the ready back end with the trainer's guide and opens the <b>/docs</b> page."),
+            ("Analyst", "Reads the pages about the data and the AI with the team and lists what the product must answer."),
+            ("Marketing leader", "Starts the team talking: who is our investor and which problem do we solve?"),
         ]),
-        phase(2, "Specs and design", 15, d.BLUE, [
-            ("Spec writer", "Writes the requirements in simple sentences: the minimum first, then the nice-to-haves."),
-            ("Designer", "Sketches the layout on paper or a slide, picks colors and a name."),
-            ("Financial analyst", "Chooses an investor profile and the weights, and guesses what the winner looks like."),
-            ("Developer", "Asks the AI for a first empty page that talks to the back end."),
+        phase(2, "Plan and design", 15, d.BLUE, [
+            ("Analyst", "Writes the requirements for the GUI, the skill and the agent: the minimum first."),
+            ("Designer", "Sketches the GUI on paper or a slide and picks colors."),
+            ("Lead developer", "Asks the AI for a first empty page that talks to the back end."),
+            ("Sales leader", "Thinks about the customer: who pays, and how much?"),
         ]),
         phase(3, "Build the minimum", 25, d.FE_RED, [
-            ("Developer", "Builds the page with the AI from the spec, the sketch and the list of gates."),
-            ("Spec writer", "Answers the developer's questions and fixes the spec if needed."),
-            ("Tester", "Prepares a test checklist from the spec."),
-            ("Financial analyst", "Prepares five good questions for the AI."),
+            ("Lead developer", "Builds the GUI with the AI from the requirements, the sketch and the list of gates."),
+            ("Analyst", "Writes the first skill and the agent's job, and tests them in Gemini."),
+            ("Designer", "Prepares the logo, colors and a slide template."),
+            ("Marketing leader", "Chooses the company name and writes the one-sentence promise."),
+            ("Sales leader", "Builds the business case: customer, price and the ask."),
         ]),
         phase(4, "Nice to have", 15, d.PURPLE, [
-            ("Manager", "With the team, picks at least two nice-to-haves that fit the time."),
-            ("Developer", "Adds them with the AI. Pastes error messages back to the AI when something breaks."),
-            ("Designer", "Reviews the look and asks for polishing."),
+            ("Lead developer", "Adds at least two nice-to-haves with the AI. Pastes error messages back when something breaks."),
+            ("Analyst", "Improves the skill and the agent until they answer well every time."),
+            ("Designer", "Reviews the look of the GUI and asks for polishing."),
+            ("Joker", "Helps where it is needed most, in the role you chose."),
         ]),
-        phase(5, "Test and decide", 15, d.GREEN, [
-            ("Tester", "Runs the checklist, reports bugs, checks one AI claim against the table."),
-            ("Financial analyst", "Uses the page to find the winner and a runner-up: 3 reasons for, 2 risks against."),
-            ("Manager", "Makes the final call and confirms what the team hands in."),
+        phase(5, "Test and polish", 15, d.GREEN, [
+            ("Joker", "Tests the whole product, reports bugs and checks one AI claim against the table."),
+            ("Analyst", "Uses the product to find the best startup and a runner-up: 3 reasons for, 2 risks against."),
+            ("Sales leader", "Finalizes the price and the ask."),
+            ("Marketing leader", "Finalizes the story that carries the pitch."),
         ]),
     ]
     body = f"""
 <p class="lead">Your company works in <b>five phases</b>. Everybody has something to do in each phase, and most of the work runs in parallel. The times are only suggestions, the trainer helps with the schedule.</p>
 {"".join(ps)}
-<div class="callout green"><b class="t">📦 What your company hands in at the end</b>
+<div class="callout green"><b class="t">📦 What your company has at the end of block 1</b>
 <div class="grid2" style="margin-top:3px;gap:2px 16px">
-<span>🖥️ The working web page</span><span>🏆 The winner startup and the reasons</span>
-<span>🚦 Two risks you found</span><span>🤖 What you learned about using AI</span></div></div>"""
-    return page(9, "Your mission, phase by phase", body)
+<span>🖥️ A working GUI</span><span>🧩 A skill and 🦾 an agent</span>
+<span>🏆 The best startup, with reasons</span><span>💼 Your business idea and the ask</span></div></div>"""
+    return page(11, "Your mission, phase by phase", body)
 
 
 def page_team():
     body = f"""
-<p class="lead">There are two blocks of 80 minutes. In the first one you build the web page and decide. In the second one you prepare the presentation.</p>
+<p class="lead">There are two blocks of 80 minutes. In the first one you build the product. In the second one you prepare the pitch and present it to the investors.</p>
 {d.timeline()}
 <div class="two" style="margin-top:6px">
-  <div class="callout blue"><b class="t">Block 1: the web page</b>Kick-off, specs and design, the minimum page, the nice-to-haves, test and decision. See the phases on page 9.</div>
-  <div class="callout green"><b class="t">Block 2: the presentation</b>Think up the story, build the slides, rehearse. The trainer tells you the order of the show.</div>
+  <div class="callout blue"><b class="t">Block 1: the product</b>Kick-off, plan and design, the minimum, the nice-to-haves, test and polish. See the phases on page 11.</div>
+  <div class="callout green"><b class="t">Block 2: the pitch</b>Think up the story, build the slides, rehearse, then every team presents about 5 minutes. The trainer tells you the order.</div>
 </div>
 <h3>🎬 Who does what in block 2?</h3>
 <div class="tbl"><table>
-<tr><th style="width:150px">Role</th><th>Task during the presentation work</th></tr>
-<tr><td>{chip("Manager")}</td><td>Leads the story discussion, watches the time, approves the final slides.</td></tr>
-<tr><td>{chip("Presenter")}</td><td>Writes the storyline and the speaker notes, leads the rehearsal.</td></tr>
-<tr><td>{chip("Designer")}</td><td>Builds the slides and the charts.</td></tr>
-<tr><td>{chip("Financial analyst")}</td><td>Provides the numbers, the reasons for the choice and the risks.</td></tr>
-<tr><td>{chip("Developer")}</td><td>Prepares a short live demo or screenshots of the web page.</td></tr>
-<tr><td>{chip("Tester")}</td><td>Checks that every number and claim on the slides is true.</td></tr>
-<tr><td>{chip("Spec writer")}</td><td>Explains what was asked for and how the page matches it.</td></tr>
+<tr><th style="width:170px">Role</th><th>Task during the pitch work</th></tr>
+<tr><td>{chip("Marketing leader")}</td><td>Writes the storyline and the speaker notes, leads the rehearsal.</td></tr>
+<tr><td>{chip("Designer")}</td><td>Builds the slides, the charts and the logo.</td></tr>
+<tr><td>{chip("Sales leader")}</td><td>Builds the business slide and the ask, and answers money questions.</td></tr>
+<tr><td>{chip("Analyst")}</td><td>Provides the numbers, the winner and the risks, and checks every claim.</td></tr>
+<tr><td>{chip("Lead developer")}</td><td>Prepares a short live demo of the GUI, skill and agent, with screenshots as backup.</td></tr>
+<tr><td>{chip("Joker")}</td><td>Keeps the time and prepares answers to the questions investors may ask.</td></tr>
 </table></div>
 <div class="callout yellow" style="margin-top:10px"><b class="t">💬 If you get stuck</b>1. Ask the AI. 2. Ask a teammate. 3. Call the trainer. Getting stuck is normal: it is part of learning!</div>"""
-    return page(10, "Time plan and teamwork", body)
-
-
-def page_presentation():
-    must = [
-        ("👤", "Understandable", "Speak so that anyone who was not with you can follow."),
-        ("🧠", "Reasoned", "Explain why you chose these weights."),
-        ("🎭", "Honest", "Show the risks, and where the AI can be wrong."),
-        ("🎨", "Visual", "Use pictures, colors and numbers, not long texts."),
-    ]
-    mh = "".join(f'<div class="card"><h4>{i} {t}</h4><p>{s}</p></div>' for i, t, s in must)
-    body = f"""
-<p class="lead">In the second 80 minutes you <b>present</b> your solution to the other teams. It does not have to be perfect, but it needs a story: where you started, what you found and where you ended up.</p>
-<h3>🎞️ The suggested story: 5 slides</h3>
-{d.presentation_flow()}
-<div class="grid2" style="margin-top:12px">
-  <div class="card" style="border-color:#2563EB"><h4 style="color:#2563EB">Slides 1-2: the base</h4><p>What did you look at? Which criteria did you find important, and why?</p></div>
-  <div class="card" style="border-color:#16A34A"><h4 style="color:#16A34A">Slide 3: the winner</h4><p>Who won? Show it with a chart or a picture of your ranking and tell why this one.</p></div>
-  <div class="card" style="border-color:#EA580C"><h4 style="color:#EA580C">Slide 4: the risks</h4><p>What could go wrong with the winner? Did the winner stay the same when you changed a weight?</p></div>
-  <div class="card" style="border-color:#7C3AED"><h4 style="color:#7C3AED">Slide 5: the AI</h4><p>How did the AI help, and where did you have to correct it? What would you do differently next time?</p></div>
-</div>
-<h3>⭐ What to pay attention to</h3>
-<div class="grid2">{mh}</div>
-<div class="callout purple" style="margin-top:12px"><b class="t">🏢 Show your company!</b>Let every role say one sentence about what they contributed. It shows that you worked as a real team.</div>
-<div class="callout green"><b class="t">✅ Before you present, ask yourselves</b>Would someone who hears it for the first time understand it? Is every number true? Does everybody have a part in the show?</div>"""
-    return page(11, "The presentation", body)
+    return page(12, "Time plan and teamwork", body)
 
 
 def page_glossary():
     terms = [
         ("Startup", "A new business that wants to grow fast."),
-        ("Sector", "The field the company works in (for example health or finance)."),
+        ("Investor", "A person or company that gives money to a business and hopes to get more back."),
+        ("Pitch", "A short presentation that tries to convince the investors."),
+        ("The ask", "How much money you ask the investors for, and what you will do with it."),
         ("EBITDA", "The profit from running the business. If negative, the company loses money."),
         ("Gross margin", "The part of the selling price that is left after the costs."),
         ("Runway", "For how many months the company's money is enough."),
         ("Churn", "The share of customers who leave the company."),
         ("Weight", "How important a criterion is."),
-        ("Ranking", "The companies in order of their score."),
         ("M Ft", "Million forints. Money amounts are given in this."),
+        ("Gemini", "The AI of Google that your product uses."),
         ("Prompt", "The question or instruction you write to the AI."),
-        ("FE (front end)", "The web page that the user sees and uses."),
-        ("API", "A gate through which the web page asks the back end for data."),
-        ("Spec", "A written description of what the page must do."),
+        ("GUI / FE", "The screen (web page) that the user sees and uses."),
+        ("API", "A gate through which the GUI asks the back end for data."),
+        ("Skill", "A saved recipe: written instructions that make the AI do one job well."),
+        ("Agent", "An AI helper that does a job with several steps on its own."),
     ]
     th = "".join(f'<tr><td style="width:120px"><b style="color:#2563EB">{t}</b></td><td>{s}</td></tr>' for t, s in terms)
     body = f"""
@@ -485,16 +467,103 @@ def page_glossary():
 <h3>📚 Small glossary</h3>
 <div class="tbl"><table>{th}</table></div>
 <div class="callout green" style="margin-top:14px;text-align:center;font-size:14px"><b>🚀 Good luck, and have a great workshop!</b><br>Curious questions and honest reasoning are worth more than a perfect result.</div>"""
-    return page(12, "Good to know and glossary", body)
+    return page(14, "Good to know and glossary", body)
 
 
 def build_html():
-    pages = [cover(), page_task(), page_data(), page_scoring(), page_risk(), page_app(), page_ai(), page_roles(), page_tasks(), page_team(), page_presentation(), page_glossary()]
+    pages = [
+        cover(), page_task(), page_data(), page_scoring(), page_risk(), page_product(), page_app(),
+        page_skill_agent(), page_ai(), page_roles(), page_tasks(), page_team(), page_pitch(), page_glossary(),
+    ]
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f'<title>Startup Intelligence · Workshop Guide</title><style>{CSS}</style></head><body>{"".join(pages)}</body></html>'
     )
+
+
+def page_product():
+    cards = [
+        ("🖥️ GUI", d.FE_RED, "#FFE4E6", "The screen people see and click: buttons, tables, a question box.",
+         "Minimum: Excel upload, ranking table, ask-the-AI box.", "Nice to have: sliders, comparison, charts, search.", "See page 7"),
+        ("🧩 Skill", d.TEAL, "#CCFBF1", "A saved recipe for the AI: a short written instruction that makes it do one job well, every time.",
+         "Minimum: one skill, written and tested in Gemini.", "Nice to have: two or three skills, for example one for each investor type.", "See page 8"),
+        ("🦾 Agent", d.ORANGE, "#FFEDD5", "An AI helper that does a job with several steps on its own, without you guiding every step.",
+         "Minimum: one agent with a clear job that it completes.", "Nice to have: the agent uses the ready data and writes a short report.", "See page 8"),
+    ]
+    cs = "".join(
+        f'<div class="mcard" style="background:{bg};border-color:{col}"><h4 style="color:{col}">{name}</h4><p>{what}</p>'
+        f'<div class="ex" style="font-style:normal;color:#1E293B"><b>{mn}</b></div><div class="ex">{nice}</div><div class="ex"><b>{pg}</b></div></div>'
+        for name, col, bg, what, mn, nice, pg in cards
+    )
+    body = f"""
+<p class="lead">Your product has <b>three parts</b>: a GUI, a skill and an agent. All three use <b>Gemini</b>, Google's AI. Every part has a <b>minimum</b> (this must work) and a <b>nice to have</b> level (if time remains).</p>
+{d.product_parts()}
+<div class="grid3" style="margin-top:10px">{cs}</div>
+<div class="grid2" style="margin-top:10px">
+  <div class="callout blue"><b class="t">🤝 Who builds what?</b>The <b>lead developer</b> builds the GUI. The <b>analyst</b> writes the skill and the agent instructions. The others shape the product, the story and the sale. See page 10.</div>
+  <div class="callout yellow"><b class="t">📌 Keep it small</b>One good skill and one good agent beat five half-working ones. Start with the minimum, then grow.</div>
+</div>
+<div class="callout purple"><b class="t">🎯 What is the product for?</b>It helps an investor find the most promising startup out of the 1000. How exactly is up to you: you decide who your customer is and what you promise them.</div>"""
+    return page(6, "Your product: three parts", body)
+
+
+def page_skill_agent():
+    steps = [
+        ("1", "#2563EB", "<b>Write the job.</b> In simple sentences: who is it for, what should it do, how should the answer look?"),
+        ("2", "#EA580C", "<b>Test it in Gemini.</b> Try it with real questions about the startups. Is the answer useful and true?"),
+        ("3", "#16A34A", "<b>Improve it.</b> Change the words, add an example, try again. Repeat until it works every time."),
+    ]
+    sh = "".join(f'<div class="step"><div class="n" style="background:{c}">{n}</div><div>{t}</div></div>' for n, c, t in steps)
+    body = f"""
+<p class="lead">You do not need to write code for a skill or an agent. You write <b>clear instructions in plain words</b>, and Gemini follows them. The analyst leads this work, the whole team helps with ideas.</p>
+<div class="grid2">
+  <div class="mcard" style="background:#CCFBF1;border-color:#0D9488"><h4 style="color:#0D9488">🧩 Skill = a recipe card</h4><p>You start it, it follows the recipe and gives <b>one answer</b>. The same recipe gives the same kind of answer every time.</p><div class="ex">Example: "Explain any startup in 5 simple sentences and name one risk."</div></div>
+  <div class="mcard" style="background:#FFEDD5;border-color:#EA580C"><h4 style="color:#EA580C">🦾 Agent = a helper</h4><p>You give it a <b>goal</b>. It plans the steps, uses the data and tools, and decides what to do next by itself.</p><div class="ex">Example: "Scout": takes the top 5 of the ranking, checks the risk lights and writes a one-page briefing for an investor.</div></div>
+</div>
+<h3>🛠️ How to make one: three steps</h3>
+{sh}
+<h3>🧾 A simple card to fill in</h3>
+<div class="tbl"><table>
+<tr><th style="width:150px">Question</th><th>Your answer</th></tr>
+<tr><td><b>Name</b></td><td>A short name, for example "Cautious Investor Helper".</td></tr>
+<tr><td><b>For whom</b></td><td>Who uses it? (a careful investor, a student, a manager)</td></tr>
+<tr><td><b>Steps</b></td><td>What should it do, in order? (read the data, pick the best, explain why)</td></tr>
+<tr><td><b>The answer looks like</b></td><td>A table? Five bullet points? One paragraph in simple words?</td></tr>
+<tr><td><b>Never do</b></td><td>For example: never invent numbers, always say if you are unsure.</td></tr>
+</table></div>
+<div class="grid2" style="margin-top:10px">
+  <div class="callout green"><b class="t">💡 More ideas</b>Skill: "Plain language", "Weights for a bold investor". Agent: "Watchdog" that finds red risk lights in the top 20 and explains them.</div>
+  <div class="callout red"><b class="t">⚠️ Always check</b>An agent works on its own, so check its result against the table before you show it to anyone.</div>
+</div>
+<p class="note" style="margin-top:6px">The trainer shows you where to test your skill and agent (for example in Gemini or Google AI Studio).</p>"""
+    return page(8, "The skill and the agent", body)
+
+
+def page_pitch():
+    look = [
+        ("🎯", "Clear problem", "Do we understand what the product is for?"),
+        ("✅", "Working product", "Did we see it work, live?"),
+        ("💼", "Believable business", "Will someone really pay for it?"),
+        ("🎭", "Honest risks", "Does the team know what can go wrong?"),
+    ]
+    lh = "".join(f'<div class="card"><h4>{i} {t}</h4><p>{s}</p></div>' for i, t, s in look)
+    body = f"""
+<p class="lead">In the second 80 minutes you <b>pitch</b> your product to the investors: the other teams and the trainer. Like a company that asks for money on the stock exchange, you must show that the product works and that it is worth the investment.</p>
+<h3>🎞️ The suggested story: 5 slides</h3>
+{d.presentation_flow()}
+<div class="grid2" style="margin-top:12px">
+  <div class="card" style="border-color:#2563EB"><h4 style="color:#2563EB">Slide 1: problem and team</h4><p>Which problem do you solve? Name your company and say in one sentence what each role did.</p></div>
+  <div class="card" style="border-color:#0D9488"><h4 style="color:#0D9488">Slide 2: the product</h4><p>Show the GUI, the skill and the agent working, live if you can.</p></div>
+  <div class="card" style="border-color:#16A34A"><h4 style="color:#16A34A">Slide 3: the proof</h4><p>Which startup did your product find as the best, and why? Use a chart.</p></div>
+  <div class="card" style="border-color:#EA580C"><h4 style="color:#EA580C">Slide 4: business and the ask</h4><p>Who pays, how much, and how much money do you ask for? What will you do with it?</p></div>
+  <div class="card" style="border-color:#7C3AED"><h4 style="color:#7C3AED">Slide 5: risks and learning</h4><p>What can go wrong? Where was the AI wrong? What would you do next?</p></div>
+</div>
+<h3>⭐ What the investors look at</h3>
+<div class="grid2">{lh}</div>
+<div class="callout purple" style="margin-top:12px"><b class="t">🏦 Idea for the investor round (the trainer decides)</b>Every investor gets 100 virtual coins and gives them to the teams they believe in, but not to their own team. The team with the most coins wins.</div>
+<div class="callout green"><b class="t">✅ Before you present, ask yourselves</b>Would someone who hears it for the first time understand it? Is every number true? Does everybody have a part in the show?</div>"""
+    return page(13, "The investor pitch", body)
 
 
 def find_browser():

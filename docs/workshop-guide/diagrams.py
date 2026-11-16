@@ -37,13 +37,12 @@ EXAMPLE = {
 }
 
 ROLES = {
-    "Manager": ("🧭", NAVY),
-    "Developer": ("💻", FE_RED),
-    "Spec writer": ("📝", BLUE),
+    "Lead developer": ("💻", FE_RED),
+    "Analyst": ("🔍", BLUE),
     "Designer": ("🎨", PINK),
-    "Financial analyst": ("💰", GREEN),
-    "Tester": ("🧪", ORANGE),
-    "Presenter": ("🎤", TEAL),
+    "Sales leader": ("💼", GREEN),
+    "Marketing leader": ("📣", ORANGE),
+    "Joker": ("🃏", PURPLE),
 }
 
 
@@ -143,9 +142,9 @@ def big_picture():
         (BLUE, "📥", ["Loading", "the data"]),
         (BLUE, "🧮", ["Scoring", "6 criteria"]),
         (PURPLE, "🤖", ["AI analysis", "you can ask it"]),
-        (GREEN, "🏆", ["Decision", "who is best?"]),
+        (GREEN, "🏆", ["Proof", "the best startup"]),
     ]
-    pills = ["The data", "The program does it", "The program does it", "The AI helps", "You decide!"]
+    pills = ["The data", "The program does it", "The program does it", "The AI helps", "Your product shows it"]
     body = ""
     for i, ((col, icon, arr), x) in enumerate(zip(spec, xs)):
         body += node(x, y, w, h, col, icon, arr)
@@ -160,7 +159,7 @@ def big_picture():
 def architecture():
     body = ""
     body += rect(255, 8, 210, 82, FE_RED)
-    body += t(360, 40, "🖥️ Web page (FE)", 17, "#fff", 800)
+    body += t(360, 40, "🖥️ GUI (FE)", 17, "#fff", 800)
     body += t(360, 62, "YOU BUILD THIS", 12, "#FFE4E6", 700)
     body += rect(480, 12, 130, 34, "#9F1239", rx=10)
     body += t(545, 34, "Minimum", 13, "#fff", 700)
@@ -389,74 +388,83 @@ def ai_flow():
     return svg(720, 190, body, min_width=560)
 
 
+def split_name(name):
+    if len(name) <= 11 or " " not in name:
+        return [name]
+    first, second = name.split(" ", 1)
+    return [first, second]
+
+
 def team_chart():
     body = ""
-    mx, mw, mh = 255, 210, 78
+    mx, mw, mh = 215, 290, 58
     body += rect(mx, 0, mw, mh, NAVY)
-    body += f'<text x="{mx + mw / 2}" y="34" font-size="26" text-anchor="middle">🧭</text>'
-    body += t(mx + mw / 2, 56, "Manager", 16, "#fff", 800)
-    body += t(mx + mw / 2, 72, "leads the company", 10.5, "#CBD5E1", 600)
+    body += t(mx + mw / 2, 26, "🏢 Your small company", 17, "#fff", 800)
+    body += t(mx + mw / 2, 46, "6 people, 6 roles, 1 product", 12, "#CBD5E1", 600)
     names = [
-        ("Developer", "Working web page"),
-        ("Spec writer", "Requirements"),
-        ("Designer", "Look and layout"),
-        ("Financial analyst", "Weights, insight"),
-        ("Tester", "Test report"),
-        ("Presenter", "Pitch and slides"),
+        ("Lead developer", "The working GUI"),
+        ("Analyst", "Skill and the facts"),
+        ("Designer", "Look and slides"),
+        ("Sales leader", "Price and the ask"),
+        ("Marketing leader", "Brand and story"),
+        ("Joker", "You decide!"),
     ]
-    w, gap, y, h = 108, 14, 140, 86
-    body += f'<line x1="{mx + mw / 2}" y1="{mh}" x2="{mx + mw / 2}" y2="112" stroke="{GRAY}" stroke-width="3"/>'
-    body += f'<line x1="{w / 2}" y1="112" x2="{5 * (w + gap) + w / 2}" y2="112" stroke="{GRAY}" stroke-width="3"/>'
+    w, gap, y, h = 108, 14, 118, 86
+    bus = 90
+    body += f'<line x1="{mx + mw / 2}" y1="{mh}" x2="{mx + mw / 2}" y2="{bus}" stroke="{GRAY}" stroke-width="3"/>'
+    body += f'<line x1="{w / 2}" y1="{bus}" x2="{5 * (w + gap) + w / 2}" y2="{bus}" stroke="{GRAY}" stroke-width="3"/>'
     for i, (name, out) in enumerate(names):
         x = i * (w + gap)
         icon, col = ROLES[name]
-        body += f'<line x1="{x + w / 2}" y1="112" x2="{x + w / 2}" y2="{y}" stroke="{GRAY}" stroke-width="3"/>'
-        stroke = "#FDE047" if name == "Developer" else "none"
-        body += rect(x, y, w, h, col, stroke, rx=14, sw=4)
-        body += f'<text x="{x + w / 2}" y="{y + 36}" font-size="26" text-anchor="middle">{icon}</text>'
-        if name == "Financial analyst":
-            body += lines(x + w / 2, y + 56, ["Financial", "analyst"], 11.5, "#fff", 700, 13)
+        body += f'<line x1="{x + w / 2}" y1="{bus}" x2="{x + w / 2}" y2="{y}" stroke="{GRAY}" stroke-width="3"/>'
+        if name == "Lead developer":
+            body += rect(x, y, w, h, col, "#FDE047", rx=14, sw=4)
+        elif name == "Joker":
+            body += rect(x, y, w, h, col, "#E9D5FF", rx=14, sw=4)
         else:
-            body += t(x + w / 2, y + 62, name, 12.5, "#fff", 700)
+            body += rect(x, y, w, h, col, rx=14)
+        body += f'<text x="{x + w / 2}" y="{y + 34}" font-size="26" text-anchor="middle">{icon}</text>'
+        parts = split_name(name)
+        if len(parts) == 1:
+            body += t(x + w / 2, y + 62, name, 13, "#fff", 700)
+        else:
+            body += lines(x + w / 2, y + 54, parts, 12.5, "#fff", 700, 14)
         body += rect(x, y + h + 10, w, 26, col, rx=13, opacity=0.14)
         body += t(x + w / 2, y + h + 27, out, 10.5, col, 700)
-    return svg(720, 270, body, min_width=600)
+    return svg(720, 248, body, min_width=600)
 
 
 def team_flow():
     spec = [
-        ("📋", ["Brief"], "Manager"),
-        ("📝", ["Specs"], "Spec writer"),
-        ("🎨", ["Design"], "Designer"),
-        ("💻", ["Build"], "Developer"),
-        ("🧪", ["Test"], "Tester"),
-        ("🎤", ["Pitch"], "Presenter"),
+        ("🔍", ["Facts and", "specs"], "Analyst", BLUE),
+        ("🎨", ["Design"], "Designer", PINK),
+        ("💻", ["Build"], "Lead developer", FE_RED),
+        ("📣", ["Brand and", "story"], "Marketing leader", ORANGE),
+        ("💼", ["Price and", "the ask"], "Sales leader", GREEN),
+        ("🎤", ["Pitch"], "Whole team", NAVY),
     ]
     body = ""
     w, gap, y, h = 105, 18, 24, 100
-    for i, (icon, arr, role) in enumerate(spec):
+    for i, (icon, arr, role, col) in enumerate(spec):
         x = i * (w + gap)
-        col = ROLES[role][1]
-        body += node(x, y, w, h, col, icon, arr, 14)
+        body += node(x, y, w, h, col, icon, arr, 13)
         body += badge(x + 12, y + 4, i + 1, col)
         body += rect(x, y + h + 12, w, 28, col, rx=14, opacity=0.14)
-        body += t(x + w / 2, y + h + 31, role, 11.5, col, 700)
+        body += t(x + w / 2, y + h + 31, role, 11, col, 700)
         if i < 5:
             body += arrow(x + w + 2, y + h / 2, x + w + gap - 2, y + h / 2, GRAY, 2.5, 8)
-    gx0 = 1 * (w + gap)
-    gx1 = 4 * (w + gap) + w
-    body += rect(gx0, 178, gx1 - gx0, 34, GREEN, rx=17, opacity=0.18)
-    body += t((gx0 + gx1) / 2, 200, "💰 Financial analyst: picks the weights, checks the numbers all along", 12, "#166534", 700)
+    body += rect(0, 178, 720, 34, PURPLE, rx=17, opacity=0.16)
+    body += t(360, 200, "🃏 Joker: helps wherever the team needs it most. You choose where!", 12, "#5B21B6", 700)
     return svg(720, 222, body, min_width=600)
 
 
 def timeline():
     body = ""
     blocks = [
-        ("Block 1 · 80 minutes · Build the web page", 24, [
-            (10, "Kick-off", NAVY), (15, "Specs + design", BLUE), (25, "Build minimum", FE_RED), (15, "Nice to have", PURPLE), (15, "Test + decide", GREEN)]),
-        ("Block 2 · 80 minutes · Prepare the presentation", 118, [
-            (15, "Story", ORANGE), (40, "Build the slides", PINK), (15, "Rehearsal", PURPLE), (10, "Show", GREEN)]),
+        ("Block 1 · 80 minutes · Build the product", 24, [
+            (10, "Kick-off", NAVY), (15, "Plan + design", BLUE), (25, "Build minimum", FE_RED), (15, "Nice to have", PURPLE), (15, "Test + polish", GREEN)]),
+        ("Block 2 · 80 minutes · Prepare and give the pitch", 118, [
+            (10, "Story", ORANGE), (30, "Build the slides", PINK), (15, "Rehearsal", PURPLE), (25, "Pitches", GREEN)]),
     ]
     for title, y, segs in blocks:
         body += t(0, y - 8, title, 15, NAVY, 800, "start")
@@ -476,11 +484,11 @@ def timeline():
 
 def presentation_flow():
     spec = [
-        ("1", "Who we are,", "what we did", BLUE),
-        ("2", "How we", "scored", TEAL),
-        ("3", "The winning", "startup", GREEN),
-        ("4", "Risks and", "doubts", ORANGE),
-        ("5", "What we learned", "about AI", PURPLE),
+        ("1", "The problem", "and our team", BLUE),
+        ("2", "Our product", "(live demo)", TEAL),
+        ("3", "Proof: the", "winner we found", GREEN),
+        ("4", "Business", "and the ask", ORANGE),
+        ("5", "Risks and", "what we learned", PURPLE),
     ]
     body = ""
     w, gap = 120, 30
@@ -495,6 +503,31 @@ def presentation_flow():
         if i < 4:
             body += arrow(x + w + 3, 70, x + w + gap - 3, 70, GRAY, 3, 10)
     return svg(720, 140, body, min_width=560)
+
+
+def product_parts():
+    body = ""
+    cards = [
+        (0, FE_RED, "🖥️", ["GUI", "what people see and click"]),
+        (250, TEAL, "🧩", ["Skill", "a saved recipe for the AI"]),
+        (500, ORANGE, "🦾", ["Agent", "an AI helper that works alone"]),
+    ]
+    body += t(0, 22, "🚀 YOUR PRODUCT has three parts", 15, NAVY, 800, "start")
+    for x, col, icon, arr in cards:
+        body += node(x, 36, 220, 120, col, icon, arr, 13)
+    body += rect(0, 206, 230, 52, BE_BLUE)
+    body += t(115, 228, "🔌 Ready for you", 13, "#fff", 800)
+    body += t(115, 246, "API, Main.py, Excel", 11.5, "#DBEAFE", 600)
+    body += rect(250, 206, 470, 52, PURPLE)
+    body += t(485, 228, "🤖 Gemini", 13, "#fff", 800)
+    body += t(485, 246, "the AI brain behind your skill and your agent", 11.5, "#EDE9FE", 600)
+    body += arrow(110, 158, 110, 202, FE_RED, 3, 10)
+    body += arrow(360, 158, 360, 202, TEAL, 3, 10)
+    body += arrow(610, 158, 610, 202, ORANGE, 3, 10)
+    body += arrow(360, 262, 360, 290, GRAY, 3, 10)
+    body += rect(0, 294, 720, 40, GREEN, rx=20)
+    body += t(360, 320, "🏦 Then you sell it to the investors", 15, "#fff", 800)
+    return svg(720, 342, body, min_width=560)
 
 
 def fund_stages():
