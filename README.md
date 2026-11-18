@@ -77,6 +77,9 @@ Corvinus_allianz_proba/
 ├── main.py                       # FastAPI backend: import, pontozás, API-végpontok
 ├── public/
 │   └── index.html                # Egyoldalas frontend (dashboard, chat, rangsor)
+├── evaluation/
+│   ├── index.html                # Pontozólap az oktatóknak (automatikus összpontszám)
+│   └── Evaluation criteria.pdf   # Értékelési szempontok (angol, 7 oldal)
 ├── startup_adatok_1000_db.xlsx   # 1000 fiktív startup tesztadatbázis
 ├── requirements.txt              # Python-függőségek
 ├── .env                          # Környezeti változók (API-kulcs)
@@ -295,12 +298,16 @@ Ha a rangsor élbolya robusztus a súlyváltozásra, az erősíti a modell hitel
 
 ## Workshop-útmutató
 
-A Corvinus AI-szeminárium 3. napi workshopjához angol nyelvű, hallgatóknak szóló útmutató készült (14 oldal, PDF és reszponzív HTML).
+A Corvinus AI-szeminárium 3. napi workshopjához angol nyelvű, hallgatóknak szóló, 8 oldalas útmutató készült kattintható tartalomjegyzékkel: `docs/Workshop guide.pdf`.
 
-- **Feladat:** 5 csapat, csapatonként 6 fő (lead developer, analyst, designer, sales leader, marketing leader és egy joker). A csapatok Gemini segítségével terméket (GUI, skill, agent) fejlesztenek, és befektetőknek adják el (pitch).
-- **Adott a háttér:** API, `main.py`, Gemini és az Excel. Csak a GUI-t építi egyetlen fő, a lead developer.
-- **Fájlok:** `docs/Startup_Intelligence_Workshop_Guide.pdf`, `docs/workshop-guide/guide.html`
-- **Újragenerálás:** `cd docs/workshop-guide && python build_guide.py` (Edge vagy Chrome szükséges a PDF-hez).
+- **1. fejezet, a jelenlegi állapot:** hogyan működik most az app (háttér, alapértelmezett pontozás és közlekedési lámpa, Gemini).
+- **2. fejezet, a kívánt állapot:** amit a csapatoknak le kell adniuk. 5 csapat, csapatonként 6 fő (Lead developer, QA, Designer, Presenter, Marketing leader, Joker). Termék: GUI, skill és agent Gemini segítségével; saját pontozási rendszer (a súlyok beállíthatók, a győztesek újraszámolódnak); pitch: 10 perc prezentáció + 5 perc Q&A.
+- **3. fejezet, javaslatok:** csak példák és ötletek (időbeosztás, szerepek, pontozás, skill, agent, GUI, pitch).
+- **Adott a háttér:** API, `main.py`, Gemini és az Excel. A GUI-t 1-2 fejlesztő építi (a Lead developer, esetleg a Joker második fejlesztőként).
+
+### Értékelés (oktatóknak)
+
+Az `evaluation/` mappa az oktatóknak szól: az `Evaluation criteria.pdf` (angol, 7 oldal) 16 részszempontot ír le 5 kategóriában, összesen 100 pontért (0-5 értékelés, büntetések, döntetlen-szabályok, élő tesztforgatókönyv, kitöltött példa, üres pontozólap). Az `evaluation/index.html` ugyanezeket a szempontokat interaktív pontozólapként adja: nyissa meg böngészőben, vegye fel a pontokat (több bíró is, az átlagot számolja), és az összpontszám, valamint a rangsor automatikusan frissül. Az adatok a böngészőben (localStorage) maradnak, CSV-be exportálhatók.
 
 ---
 

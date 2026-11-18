@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Startup Intelligence · Scoring sheet</title>
+<style>
+:root { --navy: #0B2A5B; --ink: #1E293B; --gray: #64748B; --line: #E2E8F0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; color: var(--ink); background: #F1F5F9; font-size: 14px; }
+header { background: linear-gradient(160deg, #0B2A5B, #1D4ED8 60%, #7C3AED); color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+header h1 { margin: 0; font-size: 20px; }
+header .sp { flex: 1; }
+header a, header button { background: rgba(255,255,255,.18); color: #fff; border: 0; border-radius: 8px; padding: 7px 12px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+header a:hover, header button:hover { background: rgba(255,255,255,.3); }
+aside { position: sticky; top: 12px; align-self: start; }
+main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 18px; padding: 18px 24px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+.card { background: #fff; border-radius: 14px; box-shadow: 0 1px 3px rgba(15,23,42,.12); padding: 14px 16px; margin-bottom: 14px; }
+.card h2 { margin: 0 0 10px; font-size: 16px; color: var(--navy); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.tabs .lbl { font-weight: 700; color: var(--gray); min-width: 52px; }
+.tab { border: 2px solid var(--line); background: #fff; border-radius: 99px; padding: 5px 14px; font: inherit; font-weight: 700; cursor: pointer; color: var(--ink); }
+.tab.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.tab.add { border-style: dashed; color: var(--gray); }
+.tab { display: inline-flex; align-items: center; gap: 4px; padding: 0 6px 0 0; }
+.tab .pick { border: 0; background: none; font: inherit; font-weight: 700; color: inherit; cursor: pointer; padding: 5px 4px 5px 14px; }
+.tab .x { border: 0; background: none; cursor: pointer; font-size: 13px; line-height: 1; border-radius: 50%; width: 22px; height: 22px; opacity: .55; color: inherit; }
+.tab .x:hover { opacity: 1; background: #DC2626; color: #fff; }
+.tab.add { padding: 5px 14px; cursor: pointer; }
+dialog { border: 0; border-radius: 16px; padding: 22px 24px; max-width: 420px; box-shadow: 0 10px 40px rgba(15,23,42,.35); }
+dialog::backdrop { background: rgba(15,23,42,.55); }
+dialog h3 { margin: 0 0 8px; color: #B91C1C; }
+dialog p { margin: 0 0 16px; line-height: 1.45; }
+dialog .btns { display: flex; justify-content: flex-end; gap: 10px; }
+dialog button { border: 0; border-radius: 8px; padding: 8px 16px; font: inherit; font-weight: 700; cursor: pointer; background: #E2E8F0; color: var(--ink); }
+dialog button.danger { background: #DC2626; color: #fff; }
+.namebox { border: 2px solid var(--line); border-radius: 8px; padding: 5px 10px; font: inherit; font-weight: 700; width: 170px; }
+.cat { border-radius: 12px; overflow: hidden; border: 2px solid; margin-bottom: 12px; }
+.cat .ch { color: #fff; padding: 6px 12px; font-weight: 800; display: flex; justify-content: space-between; }
+.row { display: grid; grid-template-columns: 34px minmax(130px, 1fr) minmax(190px, 230px) 62px; gap: 8px; align-items: center; padding: 6px 12px; border-top: 1px solid var(--line); }
+.row .id { font-weight: 800; }
+.row .nm b { display: block; }
+.row .nm small { color: var(--gray); font-size: 11.5px; line-height: 1.25; display: block; }
+.row .pts { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rate { display: flex; gap: 4px; }
+.rate button { flex: 1; border: 2px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 0; font: inherit; font-weight: 800; cursor: pointer; color: var(--gray); }
+.rate button:hover { border-color: #94A3B8; }
+.rate button.on { color: #fff; border-color: transparent; }
+.stepper { display: flex; align-items: stretch; gap: 6px; }
+.stepper button { width: 44px; border: 2px solid var(--line); background: #fff; border-radius: 8px; font-size: 16px; cursor: pointer; color: var(--navy); }
+.stepper button:hover:not(:disabled) { border-color: #E11D48; color: #E11D48; }
+.stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.stepper .val { flex: 1; text-align: center; font-weight: 800; font-size: 16px; padding: 6px 0; border: 2px solid #E11D48; border-radius: 8px; background: #FFF1F2; }
+.rate input { width: 100%; border: 2px solid var(--line); border-radius: 8px; padding: 6px; font: inherit; font-weight: 800; text-align: center; }
+.pen { display: grid; grid-template-columns: 1fr 150px 50px; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.pen:first-of-type { border-top: 0; }
+.pen small { color: var(--gray); display: block; }
+.pen .v { text-align: right; font-weight: 800; color: #DC2626; }
+.pen input[type=number] { width: 70px; border: 2px solid var(--line); border-radius: 8px; padding: 5px; font: inherit; font-weight: 700; }
+.total { background: var(--navy); color: #fff; border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+.total .big { font-size: 38px; font-weight: 900; line-height: 1; }
+.total small { opacity: .8; display: block; margin-top: 4px; }
+.cats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+.cats div { color: #fff; border-radius: 10px; padding: 6px 4px; text-align: center; font-weight: 800; font-size: 15px; }
+.cats small { display: block; font-size: 10.5px; font-weight: 600; opacity: .95; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 12px; color: var(--gray); padding: 4px 6px; }
+td { padding: 6px; border-top: 1px solid var(--line); vertical-align: middle; }
+td.n { font-weight: 800; }
+td.score { font-weight: 900; font-size: 17px; text-align: right; font-variant-numeric: tabular-nums; }
+.bar { display: flex; height: 20px; border-radius: 6px; overflow: hidden; background: #F1F5F9; }
+.bar span { color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; margin-top: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; }
+.hint { color: var(--gray); font-size: 12px; margin: 6px 0 0; }
+.gold { color: #B45309; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 Startup Intelligence · Scoring sheet</h1>
+  <span class="sp"></span>
+  <a href="Evaluation criteria.pdf" target="_blank">📄 Criteria PDF</a>
+  <button id="csv">⬇️ Export CSV</button>
+  <button id="reset">🗑️ Reset all</button>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <div class="tabs" id="teamTabs"></div>
+      <div class="tabs" id="judgeTabs"></div>
+      <div class="tabs"><span class="lbl">Rename</span><input class="namebox" id="teamName" aria-label="Team name"><input class="namebox" id="judgeName" aria-label="Judge name"></div>
+      <p class="hint">Scores are saved in this browser automatically. Every judge scores alone, the results are averaged.</p>
+    </div>
+    <div id="form"></div>
+    <div class="card">
+      <h2>➖ Penalties for this team (shared by all judges)</h2>
+      <div id="penalties"></div>
+    </div>
+  </section>
+  <aside>
+    <div class="total" id="totalBox"></div>
+    <div class="card" style="margin-top:14px">
+      <h2>🏆 Ranking</h2>
+      <table id="ranking"></table>
+      <div class="legend" id="legend"></div>
+      <p class="hint">Ties are decided by category A, then category B, then the investor vote.</p>
+    </div>
+  </aside>
+</main>
+<script>
+const CATS = {
+  A: { name: "Working product", icon: "🖥️", color: "#E11D48" },
+  B: { name: "Scoring system", icon: "🎚️", color: "#EA580C" },
+  C: { name: "AI skill and agent", icon: "🧩", color: "#0D9488" },
+  D: { name: "Pitch", icon: "🎤", color: "#16A34A" },
+  E: { name: "Team and extras", icon: "🤝", color: "#7C3AED" }
+};
+const CHECKLIST_ITEMS = 9;
+const SUBS = [
+  ["A1", "A", "Minimum checklist", 10, "Requirements achieved out of 9: upload, ranking, six weights, recalculate, new winner, weights in %, ask AI, skill, agent"],
+  ["A2", "A", "Demo reliability", 8, "Whole demo live, no crash, quick recovery"],
+  ["A3", "A", "Usability and design", 6, "A stranger finds upload, weights and winner in 10 s"],
+  ["A4", "A", "Data correctness", 6, "Scores, units and order equal the reference"],
+  ["B1", "B", "Weight design and reasoning", 8, "Named investor type, every weight justified"],
+  ["B2", "B", "Technical correctness", 6, "Golden winners match, 0 and all-zero handled"],
+  ["B3", "B", "Insight", 6, "Explains the new winner, knows the light ignores weights"],
+  ["C1", "C", "Skill", 7, "One clear job, 5+ questions tested, improved"],
+  ["C2", "C", "Agent", 7, "3+ steps alone, finishes, result verified"],
+  ["C3", "C", "Critical AI use", 6, "Catches wrong answers, key kept secret"],
+  ["D1", "D", "Story and business case", 7, "Problem, who pays, how much, the ask"],
+  ["D2", "D", "Delivery and timing", 5, "Within 10 min, live demo inside, all roles speak"],
+  ["D3", "D", "Q&A", 5, "Direct, honest answers, several members"],
+  ["D4", "D", "Honest risks", 3, "Names AI errors, made-up data, not advice"],
+  ["E1", "E", "Teamwork and roles", 5, "All six roles contribute, Joker used on purpose"],
+  ["E2", "E", "Extras and creativity", 5, "Working extras, original idea"]
+].map(([id, cat, name, max, hint]) => ({ id, cat, name, max, hint }));
+const RATING_COLORS = ["#94A3B8", "#DC2626", "#F97316", "#F59E0B", "#65A30D", "#16A34A"];
+const PENALTIES = [
+  { id: "key", icon: "🔑", name: "API key visible", note: "slide, screen or repo", max: 5, type: "flag" },
+  { id: "time", icon: "⏱️", name: "Over the 10 minutes", note: "started 30 s units over 10:00, 1 point each", max: 4, type: "count" },
+  { id: "advice", icon: "💸", name: "Advice as a fact", note: "scores sold as real advice or guaranteed returns", max: 2, type: "flag" }
+];
+const STORAGE_KEY = "startup-intelligence-scoring-v1";
+
+const defaultState = () => ({
+  teams: ["Team 1", "Team 2", "Team 3", "Team 4", "Team 5"],
+  judges: ["Judge 1"],
+  team: 0,
+  judge: 0,
+  ratings: {},
+  penalties: {}
+});
+
+let state = load();
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return saved ? Object.assign(defaultState(), saved) : defaultState();
+  } catch (error) {
+    return defaultState();
+  }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+const rKey = (team, judge, id) => `${team}|${judge}|${id}`;
+const pKey = (team, id) => `${team}|${id}`;
+const labelOf = (list, i, prefix) => list[i].trim() || `${prefix} ${i + 1}`;
+const fmt = (n) => (Math.round(n * 10) / 10).toFixed(1);
+
+function pointsFor(sub, value) {
+  if (value === undefined || value === null || value === "") return 0;
+  const divisor = sub.id === "A1" ? CHECKLIST_ITEMS : 5;
+  return (value / divisor) * sub.max;
+}
+
+function judgeRatings(team, id) {
+  const values = [];
+  state.judges.forEach((_, j) => {
+    const v = state.ratings[rKey(team, j, id)];
+    if (v !== undefined && v !== "") values.push(v);
+  });
+  return values;
+}
+
+function averagePoints(team, sub) {
+  const values = judgeRatings(team, sub.id);
+  if (!values.length) return 0;
+  return values.reduce((sum, v) => sum + pointsFor(sub, v), 0) / values.length;
+}
+
+function penaltyTotal(team) {
+  return PENALTIES.reduce((sum, p) => {
+    const v = Number(state.penalties[pKey(team, p.id)] || 0);
+    return sum + Math.min(p.max, v * (p.type === "flag" ? p.max : 1));
+  }, 0);
+}
+
+function teamResult(team, judge) {
+  const cats = Object.fromEntries(Object.keys(CATS).map((c) => [c, 0]));
+  SUBS.forEach((sub) => {
+    cats[sub.cat] += judge === undefined ? averagePoints(team, sub) : pointsFor(sub, state.ratings[rKey(team, judge, sub.id)]);
+  });
+  const gross = Object.values(cats).reduce((a, b) => a + b, 0);
+  const penalty = penaltyTotal(team);
+  return { cats, gross, penalty, total: Math.max(0, gross - penalty) };
+}
+
+function el(tag, props = {}, children = []) {
+  const node = document.createElement(tag);
+  Object.entries(props).forEach(([k, v]) => {
+    if (k === "class") node.className = v;
+    else if (k === "style") node.style.cssText = v;
+    else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+    else if (k === "html") node.innerHTML = v;
+    else node[k] = v;
+  });
+  [].concat(children).forEach((c) => node.append(c));
+  return node;
+}
+
+function tabButton(label, active, canRemove, onPick, onRemove) {
+  const children = [el("button", { class: "pick", textContent: label, onclick: onPick })];
+  if (canRemove) children.push(el("button", { class: "x", textContent: "✕", title: `Remove ${label}`, onclick: onRemove }));
+  return el("span", { class: "tab" + (active ? " on" : "") }, children);
+}
+
+function renderTabs() {
+  const teamTabs = document.getElementById("teamTabs");
+  teamTabs.replaceChildren(el("span", { class: "lbl", textContent: "Team" }));
+  state.teams.forEach((_, i) => {
+    const label = labelOf(state.teams, i, "Team");
+    teamTabs.append(tabButton(label, i === state.team, state.teams.length > 1, () => { state.team = i; render(); }, () => removeTeam(i)));
+  });
+  teamTabs.append(el("button", { class: "tab add", textContent: "+ team", onclick: () => { state.teams.push(""); state.team = state.teams.length - 1; render(); } }));
+  const judgeTabs = document.getElementById("judgeTabs");
+  judgeTabs.replaceChildren(el("span", { class: "lbl", textContent: "Judge" }));
+  state.judges.forEach((_, i) => {
+    const label = labelOf(state.judges, i, "Judge");
+    judgeTabs.append(tabButton(label, i === state.judge, state.judges.length > 1, () => { state.judge = i; render(); }, () => removeJudge(i)));
+  });
+  judgeTabs.append(el("button", { class: "tab add", textContent: "+ judge", onclick: () => { state.judges.push(""); state.judge = state.judges.length - 1; render(); } }));
+  syncInput("teamName", state.teams[state.team]);
+  syncInput("judgeName", state.judges[state.judge]);
+}
+
+function syncInput(id, value) {
+  const input = document.getElementById(id);
+  if (document.activeElement !== input) input.value = value;
+}
+
+function reindex(store, position, removed) {
+  const result = {};
+  Object.entries(store).forEach(([key, value]) => {
+    const parts = key.split("|");
+    const index = Number(parts[position]);
+    if (index === removed) return;
+    if (index > removed) parts[position] = index - 1;
+    result[parts.join("|")] = value;
+  });
+  return result;
+}
+
+function confirmDelete(title, message, onConfirm) {
+  const dialog = el("dialog", {}, [
+    el("h3", { textContent: title }),
+    el("p", { textContent: message }),
+    el("div", { class: "btns" }, [
+      el("button", { textContent: "Cancel", onclick: () => dialog.close() }),
+      el("button", { class: "danger", textContent: "Yes, delete", onclick: () => { dialog.close(); onConfirm(); } })
+    ])
+  ]);
+  dialog.addEventListener("close", () => dialog.remove());
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
+function countKeys(store, position, index) {
+  return Object.keys(store).filter((key) => Number(key.split("|")[position]) === index).length;
+}
+
+function removeTeam(index) {
+  if (state.teams.length <= 1) return;
+  const name = labelOf(state.teams, index, "Team");
+  const lost = countKeys(state.ratings, 0, index) + countKeys(state.penalties, 0, index);
+  confirmDelete(`Delete ${name}?`, `This permanently deletes the team and its ${lost} saved rating and penalty entries from every judge. It cannot be undone.`, () => {
+    state.ratings = reindex(state.ratings, 0, index);
+    state.penalties = reindex(state.penalties, 0, index);
+    state.teams.splice(index, 1);
+    if (state.team > index || state.team >= state.teams.length) state.team = Math.max(0, state.team - 1);
+    render();
+  });
+}
+
+function removeJudge(index) {
+  if (state.judges.length <= 1) return;
+  const name = labelOf(state.judges, index, "Judge");
+  const lost = countKeys(state.ratings, 1, index);
+  confirmDelete(`Delete ${name}?`, `This permanently deletes the judge and their ${lost} saved ratings for all teams. The team averages will change. It cannot be undone.`, () => {
+    state.ratings = reindex(state.ratings, 1, index);
+    state.judges.splice(index, 1);
+    if (state.judge > index || state.judge >= state.judges.length) state.judge = Math.max(0, state.judge - 1);
+    render();
+  });
+}
+
+function setRating(id, value) {
+  const key = rKey(state.team, state.judge, id);
+  if (state.ratings[key] === value) delete state.ratings[key];
+  else state.ratings[key] = value;
+  render();
+}
+
+function ratingControl(sub) {
+  const current = state.ratings[rKey(state.team, state.judge, sub.id)];
+  if (sub.id === "A1") {
+    const step = (delta) => {
+      const base = current === undefined ? 0 : current;
+      state.ratings[rKey(state.team, state.judge, sub.id)] = Math.min(CHECKLIST_ITEMS, Math.max(0, base + delta));
+      render();
+    };
+    const value = current === undefined ? "-" : current;
+    return el("div", { class: "stepper" }, [
+      el("button", { textContent: "◀", title: "One less", disabled: !current, onclick: () => step(-1) }),
+      el("span", { class: "val", textContent: `${value} / ${CHECKLIST_ITEMS}` }),
+      el("button", { textContent: "▶", title: "One more", disabled: current === CHECKLIST_ITEMS, onclick: () => step(1) })
+    ]);
+  }
+  const box = el("div", { class: "rate" });
+  for (let v = 0; v <= 5; v++) {
+    box.append(el("button", { class: current === v ? "on" : "", style: current === v ? `background:${RATING_COLORS[v]}` : "", textContent: v, onclick: () => setRating(sub.id, v) }));
+  }
+  return box;
+}
+
+function renderForm() {
+  const form = document.getElementById("form");
+  form.replaceChildren();
+  Object.entries(CATS).forEach(([c, cat]) => {
+    const subs = SUBS.filter((s) => s.cat === c);
+    const max = subs.reduce((a, s) => a + s.max, 0);
+    const got = subs.reduce((a, s) => a + pointsFor(s, state.ratings[rKey(state.team, state.judge, s.id)]), 0);
+    const block = el("div", { class: "cat", style: `border-color:${cat.color}` });
+    block.append(el("div", { class: "ch", style: `background:${cat.color}` }, [el("span", { textContent: `${cat.icon} ${c} · ${cat.name}` }), el("span", { id: `sub-${c}`, textContent: `${fmt(got)} / ${max}` })]));
+    subs.forEach((sub) => {
+      const pts = pointsFor(sub, state.ratings[rKey(state.team, state.judge, sub.id)]);
+      block.append(el("div", { class: "row" }, [
+        el("span", { class: "id", style: `color:${cat.color}`, textContent: sub.id }),
+        el("div", { class: "nm" }, [el("b", { textContent: sub.name }), el("small", { textContent: sub.hint })]),
+        ratingControl(sub),
+        el("span", { class: "pts", id: `pts-${sub.id}`, textContent: `${fmt(pts)} / ${sub.max}` })
+      ]));
+    });
+    form.append(block);
+  });
+}
+
+function renderPenalties() {
+  const box = document.getElementById("penalties");
+  box.replaceChildren();
+  PENALTIES.forEach((p) => {
+    const key = pKey(state.team, p.id);
+    const value = Number(state.penalties[key] || 0);
+    const control = p.type === "flag"
+      ? el("label", {}, [el("input", { type: "checkbox", checked: value > 0, onchange: (e) => { state.penalties[key] = e.target.checked ? 1 : 0; render(); } }), " applied"])
+      : el("input", { type: "number", min: 0, max: p.max, step: 1, value, onchange: (e) => { state.penalties[key] = Math.min(p.max, Math.max(0, Math.round(Number(e.target.value)))); render(); } });
+    const applied = Math.min(p.max, value * (p.type === "flag" ? p.max : 1));
+    box.append(el("div", { class: "pen" }, [
+      el("div", {}, [el("b", { textContent: `${p.icon} ${p.name} (up to -${p.max})` }), el("small", { textContent: p.note })]),
+      control,
+      el("span", { class: "v", textContent: applied ? `-${applied}` : "0" })
+    ]));
+  });
+}
+
+function renderTotal() {
+  const avg = teamResult(state.team);
+  const own = teamResult(state.team, state.judge);
+  const box = document.getElementById("totalBox");
+  const cats = Object.entries(CATS).map(([c, cat]) => {
+    const max = SUBS.filter((s) => s.cat === c).reduce((a, s) => a + s.max, 0);
+    return `<div style="background:${cat.color}">${fmt(avg.cats[c])}<small>${c} / ${max}</small></div>`;
+  }).join("");
+  box.style.display = "block";
+  box.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="opacity:.8">${labelOf(state.teams, state.team, "Team")} · final score (average of ${state.judges.length} judge${state.judges.length > 1 ? "s" : ""})</div><div class="big">${fmt(avg.total)} <span style="font-size:18px;opacity:.7">/ 100</span></div></div><div style="text-align:right"><small>${labelOf(state.judges, state.judge, "Judge")} alone: <b>${fmt(Math.max(0, own.gross - own.penalty))}</b></small><small>Penalties: <b>-${fmt(avg.penalty)}</b></small></div></div><div class="cats">${cats}</div>`;
+}
+
+function renderRanking() {
+  const rows = state.teams.map((_, i) => ({ name: labelOf(state.teams, i, "Team"), i, ...teamResult(i) }));
+  rows.sort((a, b) => b.total - a.total || b.cats.A - a.cats.A || b.cats.B - a.cats.B);
+  const table = document.getElementById("ranking");
+  table.replaceChildren(el("tr", {}, ["#", "Team", "Points by category", "Score"].map((h) => el("th", { textContent: h }))));
+  rows.forEach((r, rank) => {
+    const bar = el("div", { class: "bar" });
+    Object.entries(CATS).forEach(([c, cat]) => {
+      bar.append(el("span", { style: `background:${cat.color};width:${r.cats[c]}%`, textContent: r.cats[c] >= 6 ? Math.round(r.cats[c]) : "" }));
+    });
+    const tr = el("tr", { style: r.i === state.team ? "background:#EFF6FF" : "" }, [
+      el("td", { class: "n" + (rank === 0 && r.total > 0 ? " gold" : ""), textContent: rank === 0 && r.total > 0 ? "🏆" : rank + 1 }),
+      el("td", { class: "n", textContent: r.name + (r.penalty ? ` (-${fmt(r.penalty)})` : "") }),
+      el("td", {}, [bar]),
+      el("td", { class: "score", textContent: fmt(r.total) })
+    ]);
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", () => { state.team = r.i; render(); });
+    table.append(tr);
+  });
+  document.getElementById("legend").innerHTML = Object.entries(CATS).map(([c, cat]) => `<span><i style="background:${cat.color}"></i>${c} ${cat.name}</span>`).join("");
+}
+
+function renderResults(changedId) {
+  const sub = SUBS.find((s) => s.id === changedId);
+  if (sub) {
+    const own = pointsFor(sub, state.ratings[rKey(state.team, state.judge, sub.id)]);
+    document.getElementById(`pts-${sub.id}`).textContent = `${fmt(own)} / ${sub.max}`;
+    const c = sub.cat;
+    const subs = SUBS.filter((s) => s.cat === c);
+    const got = subs.reduce((a, s) => a + pointsFor(s, state.ratings[rKey(state.team, state.judge, s.id)]), 0);
+    document.getElementById(`sub-${c}`).textContent = `${fmt(got)} / ${subs.reduce((a, s) => a + s.max, 0)}`;
+  }
+  renderTotal();
+  renderRanking();
+}
+
+function render() {
+  save();
+  renderTabs();
+  renderForm();
+  renderPenalties();
+  renderTotal();
+  renderRanking();
+}
+
+function bindName(inputId, list, current, prefix, refresh) {
+  const input = document.getElementById(inputId);
+  input.addEventListener("input", () => {
+    list()[current()] = input.value;
+    save();
+    refresh();
+  });
+  input.addEventListener("blur", () => {
+    const i = current();
+    list()[i] = labelOf(list(), i, prefix);
+    input.value = list()[i];
+    save();
+    refresh();
+  });
+}
+
+function refreshNames() {
+  renderTabs();
+  renderTotal();
+  renderRanking();
+}
+
+bindName("teamName", () => state.teams, () => state.team, "Team", refreshNames);
+bindName("judgeName", () => state.judges, () => state.judge, "Judge", refreshNames);
+
+document.getElementById("reset").addEventListener("click", () => {
+  if (confirm("Delete all scores, names and judges in this browser?")) {
+    state = defaultState();
+    render();
+  }
+});
+
+document.getElementById("csv").addEventListener("click", () => {
+  const header = ["Team", ...SUBS.map((s) => s.id), "Penalties", ...Object.keys(CATS).map((c) => `Cat ${c}`), "Final"];
+  const lines = [header.join(";")];
+  state.teams.forEach((_, i) => {
+    const name = labelOf(state.teams, i, "Team");
+    const r = teamResult(i);
+    const cells = SUBS.map((s) => fmt(averagePoints(i, s)));
+    lines.push([name, ...cells, fmt(r.penalty), ...Object.keys(CATS).map((c) => fmt(r.cats[c])), fmt(r.total)].join(";"));
+  });
+  const link = el("a", { href: URL.createObjectURL(new Blob(["﻿" + lines.join("\n")], { type: "text/csv" })), download: "scores.csv" });
+  link.click();
+});
+
+render();
+</script>
+</body>
+</html>
