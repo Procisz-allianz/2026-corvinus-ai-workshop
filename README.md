@@ -79,7 +79,7 @@ Corvinus_allianz_proba/
 │   └── index.html                # Egyoldalas frontend (dashboard, chat, rangsor)
 ├── evaluation/
 │   ├── index.html                # Pontozólap az oktatóknak (automatikus összpontszám)
-│   └── Evaluation criteria.pdf   # Értékelési szempontok (angol, 7 oldal)
+│   └── Evaluation criteria.pdf   # Értékelési szempontok (angol, 4 oldal)
 ├── startup_adatok_1000_db.xlsx   # 1000 fiktív startup tesztadatbázis
 ├── requirements.txt              # Python-függőségek
 ├── .env                          # Környezeti változók (API-kulcs)
@@ -307,7 +307,11 @@ A Corvinus AI-szeminárium 3. napi workshopjához angol nyelvű, hallgatóknak s
 
 ### Értékelés (oktatóknak)
 
-Az `evaluation/` mappa az oktatóknak szól: az `Evaluation criteria.pdf` (angol, 7 oldal) 16 részszempontot ír le 5 kategóriában, összesen 100 pontért (0-5 értékelés, büntetések, döntetlen-szabályok, élő tesztforgatókönyv, kitöltött példa, üres pontozólap). Az `evaluation/index.html` ugyanezeket a szempontokat interaktív pontozólapként adja: nyissa meg böngészőben, vegye fel a pontokat (több bíró is, az átlagot számolja), és az összpontszám, valamint a rangsor automatikusan frissül. Az adatok a böngészőben (localStorage) maradnak, CSV-be exportálhatók.
+Az `evaluation/` mappa az oktatóknak szól. Az értékelést a csapatok végzik egymás között, bonyolult pontozás és súlyozás nélkül: a 2 x 80 perc leteltével meglepetésként derül ki, hogy ők a zsűri. Minden csapat kijelöl egy bankárt (akiben a legjobban bíznak), ő tölti ki a csapat nevében a papír alapú lapokat. Minden csapat 4 jegyzetlapot kap (a saját csapatát nem értékeli), a prezentációk alatt ezekre jegyzetelhetnek a kiírt szempontok alapján, és a lap alján feltüntetik, hány pontot adnak az adott csapatnak. A 4 összeg együtt pontosan 100. A végén minden lapot beszedünk, az összegeket összeadjuk, és a pontok alapján hirdetünk TOP 3-at.
+
+Az `Evaluation criteria.pdf` (angol, 5 oldal) tartalmazza a menetet, a 16 szempontot 5 csoportban (pont nélkül), a nyomtatható jegyzetlapot és a mi összesítő lapunkat. Az `evaluation/index.html` az összesítő táblát adja interaktívan: írja be, ki mennyit adott kinek, és az oszlopösszegek (mind 100), a végösszegek, a rangsor és a TOP 3 automatikusan frissül. Az adatok a böngészőben (localStorage) maradnak, CSV-be exportálhatók.
+
+A diák útmutató (`docs/Workshop guide.pdf`) szándékosan nem árulja el a befektetői kör szabályait, hogy a meglepetés megmaradjon.
 
 ---
 
