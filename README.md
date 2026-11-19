@@ -79,7 +79,7 @@ Corvinus_allianz_proba/
 │   └── index.html                # Egyoldalas frontend (dashboard, chat, rangsor)
 ├── evaluation/
 │   ├── index.html                # Pontozólap az oktatóknak (automatikus összpontszám)
-│   └── Evaluation criteria.pdf   # Értékelési szempontok (angol, 4 oldal)
+│   └── Evaluation criteria.pdf   # Értékelési szempontok (angol, 5 oldal)
 ├── startup_adatok_1000_db.xlsx   # 1000 fiktív startup tesztadatbázis
 ├── requirements.txt              # Python-függőségek
 ├── .env                          # Környezeti változók (API-kulcs)
@@ -146,31 +146,35 @@ CORS_ORIGIN=                    # ha üres, minden origin engedélyezett (demó)
 
 ## Adatmodell
 
-A rendszer az Excel **első munkalapját** olvassa be; a mezőnevek a magyar startup-adatbázis oszlopaihoz igazodnak (angol fallback kulcsokkal). Az összes pénzügyi érték **millió forintban (M Ft)** értendő.
+A rendszer az Excel **első munkalapját** (`Startup data`) olvassa be. Az oszlopfejlécek **alapértelmezetten angolok** (a külföldi csapattagok miatt), a **magyar nevük** pedig három helyen megtalálható: a fejléccellák jegyzetében (egérrel a fejléc fölé víve), az Excel `Column dictionary` munkalapján, és a `GET /api/columns` végponton. Az Excel további munkalapjai: `Guide` (kétnyelvű használati útmutató) és `Column dictionary` (kulcs, angol név, magyar név, típus, mértékegység, jelentés). Az összes pénzügyi érték **millió forintban (M Ft)** értendő. A cellák értékei nincsenek lefordítva (például a város és a szektor neve változatlan).
 
-| Excel-oszlop | Belső mező | Típus |
-|---|---|---|
-| Startup ID | `id` | szöveg |
-| Cégnév | `name` | szöveg |
-| Szektor | `sector` | szöveg |
-| Város | `city` | szöveg |
-| Alapítás | `founded` | szöveg |
-| Finanszírozási fázis | `stage` | szöveg |
-| Munkavállalók (fő) | `employees` | szám |
-| Ügyfelek száma | `customers` | szám |
-| Árbevétel 2023 / 2024 / 2025 (M Ft) | `revenue2023/24/25` | szám |
-| Éves növekedés 2025 (%) | `growth` | szám |
-| Bruttó árrés (%) | `grossMargin` | szám |
-| Bruttó eredmény 2025 (M Ft) | `grossProfit` | szám |
-| EBITDA 2025 (M Ft) | `ebitda` | szám |
-| EBITDA-marzs (%) | `ebitdaMargin` | szám |
-| Összes bevont tőke (M Ft) | `funding` | szám |
-| Becsült értékelés (M Ft) | `valuation` | szám |
-| Készpénzállomány (M Ft) | `cash` | szám |
-| Havi cash burn (M Ft) | `burn` | szám |
-| Runway (hónap) | `runway` | szám |
-| Adósság (M Ft) | `debt` | szám |
-| Ügyféllemorzsolódás (%) | `churn` | szám |
+A beolvasás a fejlécet sorrendben így keresi: angol név, magyar név, belső mező neve (kis- és nagybetűre, felesleges szóközre nem érzékeny). Ezért a **régi, magyar fejlécű Excel is változatlanul importálható**. Az oszlopok egyetlen forrása a `main.py` `COLUMNS` táblázata; az import, a `/api/columns` végpont és a Gemini-prompt is ebből dolgozik, új oszlopot csak itt kell felvenni.
+
+| Excel-oszlop (angol, alapértelmezett) | Magyar név | Belső mező | Típus |
+|---|---|---|---|
+| Startup ID | Startup ID | `id` | szöveg |
+| Company name | Cégnév | `name` | szöveg |
+| Sector | Szektor | `sector` | szöveg |
+| City | Város | `city` | szöveg |
+| Founded | Alapítás | `founded` | szöveg |
+| Funding stage | Finanszírozási fázis | `stage` | szöveg |
+| Employees | Munkavállalók (fő) | `employees` | szám |
+| Customers | Ügyfelek száma | `customers` | szám |
+| Revenue 2023 (M Ft) | Árbevétel 2023 (M Ft) | `revenue2023` | szám |
+| Revenue 2024 (M Ft) | Árbevétel 2024 (M Ft) | `revenue2024` | szám |
+| Revenue 2025 (M Ft) | Árbevétel 2025 (M Ft) | `revenue2025` | szám |
+| Annual growth 2025 (%) | Éves növekedés 2025 (%) | `growth` | szám |
+| Gross margin (%) | Bruttó árrés (%) | `grossMargin` | szám |
+| Gross profit 2025 (M Ft) | Bruttó eredmény 2025 (M Ft) | `grossProfit` | szám |
+| EBITDA 2025 (M Ft) | EBITDA 2025 (M Ft) | `ebitda` | szám |
+| EBITDA margin (%) | EBITDA-marzs (%) | `ebitdaMargin` | szám |
+| Total funding raised (M Ft) | Összes bevont tőke (M Ft) | `funding` | szám |
+| Estimated valuation (M Ft) | Becsült értékelés (M Ft) | `valuation` | szám |
+| Cash balance (M Ft) | Készpénzállomány (M Ft) | `cash` | szám |
+| Monthly cash burn (M Ft) | Havi cash burn (M Ft) | `burn` | szám |
+| Runway (months) | Runway (hónap) | `runway` | szám |
+| Debt (M Ft) | Adósság (M Ft) | `debt` | szám |
+| Customer churn (%) | Ügyféllemorzsolódás (%) | `churn` | szám |
 
 ---
 
@@ -180,13 +184,14 @@ A rendszer az Excel **első munkalapját** olvassa be; a mezőnevek a magyar sta
 |---|---|---|
 | `GET` | `/api/health` | Szerver- és Gemini-állapot |
 | `GET` | `/api/settings/status` | AI-szolgáltató állapota (kulcs nélkül) |
+| `GET` | `/api/columns` | Az oszlopok szótára: belső mező, angol és magyar név, típus, mértékegység, jelentés |
 | `POST` | `/api/startups/import` | Excel feltöltése (`multipart/form-data`, `file`) |
 | `GET` | `/api/startups` | Lista: `search`, `sector`, `limit` (max 1000), `offset` |
 | `GET` | `/api/startups/{id}` | Egy startup részletei |
 | `GET` | `/api/analysis/summary` | Dashboard-összesítő és top 5 |
 | `GET` | `/api/analysis/ranking` | Pontszám szerinti rangsor (**súlyparaméterekkel**) |
 | `POST` | `/api/compare` | Startupok összehasonlítása: `{"ids":["ST0001","ST0002"]}` |
-| `POST` | `/api/analysis/ask` | Gemini-elemzés: `{"question":"..."}` |
+| `POST` | `/api/analysis/ask` | Gemini-elemzés: `{"question":"..."}`. A Gemini a kérdés nyelvén válaszol |
 | `POST` | `/api/chat` | Chat: `{"message":"..."}` |
 
 ### Paraméterezhető rangsor
@@ -300,10 +305,10 @@ Ha a rangsor élbolya robusztus a súlyváltozásra, az erősíti a modell hitel
 
 A Corvinus AI-szeminárium 3. napi workshopjához angol nyelvű, hallgatóknak szóló, 8 oldalas útmutató készült kattintható tartalomjegyzékkel: `docs/Workshop guide.pdf`.
 
-- **1. fejezet, a jelenlegi állapot:** hogyan működik most az app (háttér, alapértelmezett pontozás és közlekedési lámpa, Gemini).
-- **2. fejezet, a kívánt állapot:** amit a csapatoknak le kell adniuk. 5 csapat, csapatonként 6 fő (Lead developer, QA, Designer, Presenter, Marketing leader, Joker). Termék: GUI, skill és agent Gemini segítségével; saját pontozási rendszer (a súlyok beállíthatók, a győztesek újraszámolódnak); pitch: 10 perc prezentáció + 5 perc Q&A.
-- **3. fejezet, javaslatok:** csak példák és ötletek (időbeosztás, szerepek, pontozás, skill, agent, GUI, pitch).
-- **Adott a háttér:** API, `main.py`, Gemini és az Excel. A GUI-t 1-2 fejlesztő építi (a Lead developer, esetleg a Joker második fejlesztőként).
+- **1. fejezet, a jelenlegi állapot:** hogyan működik most az app: a kész háttér (API-végpontok, `main.py`, Gemini, Excel), az alapértelmezett cégpontozás egy valós példacégen (Green Labs 0001) lépésről lépésre, a közlekedési lámpa, és a 4 lépéses beüzemelés (Python, Gemini-kulcs, indítás, ellenőrzés), amit az AI segítségével végeznek.
+- **2. fejezet, a kívánt állapot:** amit a csapatoknak le kell adniuk. 5 csapat, csapatonként 6 fő (Lead developer, QA, Designer, Presenter, Marketing leader, Joker). Termék: GUI és skill Gemini segítségével; a saját pontozási rendszer (súlyok, újraszámolás) opcionális, nem a minimum része; az egész feladat vibe coding (a csapatok az AI-nak írják le, mit szeretnének, és az AI építi meg az appot); pitch: 10 perc prezentáció + 5 perc Q&A.
+- **3. fejezet, javaslatok:** csak példák és ötletek (időbeosztás, szerepek, pontozás, skill, GUI, pitch).
+- **Adott a háttér:** API, `main.py`, Gemini és az Excel. A GUI-t a Lead developer építi az AI segítségével (a Joker szerepét a csapat szabadon dönti el, például második fejlesztő).
 
 ### Értékelés (oktatóknak)
 

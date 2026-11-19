@@ -6,7 +6,7 @@ import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -51,40 +51,83 @@ def number(value: Any) -> float:
         return 0.0
 
 
-def text(row: dict, *keys: str) -> str:
-    for key in keys:
-        value = row.get(key)
-        if value is not None and not (isinstance(value, float) and math.isnan(value)):
+class Column(NamedTuple):
+    key: str
+    english: str
+    hungarian: str
+    kind: str
+    unit: str
+    description: str
+    extra_names: tuple[str, ...] = ()
+
+
+COLUMNS: tuple[Column, ...] = (
+    Column("id", "Startup ID", "Startup ID", "text", "", "Unique identifier of the startup.", ("ID",)),
+    Column("name", "Company name", "Cégnév", "text", "", "Name of the company.", ("Név",)),
+    Column("sector", "Sector", "Szektor", "text", "", "Business sector of the company."),
+    Column("city", "City", "Város", "text", "", "City of the company."),
+    Column("founded", "Founded", "Alapítás", "text", "year", "Year the company was founded."),
+    Column("stage", "Funding stage", "Finanszírozási fázis", "text", "", "Funding stage of the company, for example Seed or Series A."),
+    Column("employees", "Employees", "Munkavállalók (fő)", "number", "people", "Number of employees."),
+    Column("customers", "Customers", "Ügyfelek száma", "number", "customers", "Number of customers."),
+    Column("revenue2023", "Revenue 2023 (M Ft)", "Árbevétel 2023 (M Ft)", "number", "M Ft", "Revenue in 2023."),
+    Column("revenue2024", "Revenue 2024 (M Ft)", "Árbevétel 2024 (M Ft)", "number", "M Ft", "Revenue in 2024."),
+    Column("revenue2025", "Revenue 2025 (M Ft)", "Árbevétel 2025 (M Ft)", "number", "M Ft", "Revenue in 2025."),
+    Column("growth", "Annual growth 2025 (%)", "Éves növekedés 2025 (%)", "number", "%", "Revenue growth in 2025 compared to 2024."),
+    Column("grossMargin", "Gross margin (%)", "Bruttó árrés (%)", "number", "%", "Share of the price that is left after the cost of making the product."),
+    Column("grossProfit", "Gross profit 2025 (M Ft)", "Bruttó eredmény 2025 (M Ft)", "number", "M Ft", "Revenue minus the cost of making the product, in 2025."),
+    Column("ebitda", "EBITDA 2025 (M Ft)", "EBITDA 2025 (M Ft)", "number", "M Ft", "Operating profit before interest, tax and depreciation in 2025. Negative means a loss."),
+    Column("ebitdaMargin", "EBITDA margin (%)", "EBITDA-marzs (%)", "number", "%", "EBITDA divided by the revenue of 2025, times 100."),
+    Column("funding", "Total funding raised (M Ft)", "Összes bevont tőke (M Ft)", "number", "M Ft", "All the money investors gave to the company so far."),
+    Column("valuation", "Estimated valuation (M Ft)", "Becsült értékelés (M Ft)", "number", "M Ft", "Estimated value of the whole company."),
+    Column("cash", "Cash balance (M Ft)", "Készpénzállomány (M Ft)", "number", "M Ft", "Cash the company has right now."),
+    Column("burn", "Monthly cash burn (M Ft)", "Havi cash burn (M Ft)", "number", "M Ft", "How much cash the company spends in a month."),
+    Column("runway", "Runway (months)", "Runway (hónap)", "number", "months", "Cash balance divided by the monthly cash burn: how many months the cash lasts."),
+    Column("debt", "Debt (M Ft)", "Adósság (M Ft)", "number", "M Ft", "Debt of the company."),
+    Column("churn", "Customer churn (%)", "Ügyféllemorzsolódás (%)", "number", "%", "Estimated yearly share of the customers who leave."),
+)
+
+
+def header_key(value: Any) -> str:
+    return " ".join(str(value).split()).casefold()
+
+
+def header_candidates(column: Column) -> tuple[str, ...]:
+    return (column.english, column.hungarian, column.key, *column.extra_names)
+
+
+def present(value: Any) -> bool:
+    return value is not None and not (isinstance(value, float) and math.isnan(value))
+
+
+def text_value(lookup: dict[str, Any], column: Column) -> str:
+    for candidate in header_candidates(column):
+        value = lookup.get(header_key(candidate))
+        if present(value):
             return str(value).strip()
     return ""
 
 
+def number_value(lookup: dict[str, Any], column: Column) -> float:
+    for candidate in header_candidates(column):
+        name = header_key(candidate)
+        if name in lookup:
+            return number(lookup[name])
+    return 0.0
+
+
 def normalize_row(row: dict) -> dict[str, Any]:
-    return {
-        "id": text(row, "Startup ID", "ID", "id"),
-        "name": text(row, "Cégnév", "name", "Név"),
-        "sector": text(row, "Szektor", "sector"),
-        "city": text(row, "Város", "city"),
-        "founded": text(row, "Alapítás", "founded"),
-        "stage": text(row, "Finanszírozási fázis", "stage"),
-        "employees": number(row.get("Munkavállalók (fő)", row.get("employees"))),
-        "customers": number(row.get("Ügyfelek száma", row.get("customers"))),
-        "revenue2023": number(row.get("Árbevétel 2023 (M Ft)", row.get("revenue2023"))),
-        "revenue2024": number(row.get("Árbevétel 2024 (M Ft)", row.get("revenue2024"))),
-        "revenue2025": number(row.get("Árbevétel 2025 (M Ft)", row.get("revenue2025"))),
-        "growth": number(row.get("Éves növekedés 2025 (%)", row.get("growth"))),
-        "grossMargin": number(row.get("Bruttó árrés (%)", row.get("grossMargin"))),
-        "grossProfit": number(row.get("Bruttó eredmény 2025 (M Ft)", row.get("grossProfit"))),
-        "ebitda": number(row.get("EBITDA 2025 (M Ft)", row.get("ebitda"))),
-        "ebitdaMargin": number(row.get("EBITDA-marzs (%)", row.get("ebitdaMargin"))),
-        "funding": number(row.get("Összes bevont tőke (M Ft)", row.get("funding"))),
-        "valuation": number(row.get("Becsült értékelés (M Ft)", row.get("valuation"))),
-        "cash": number(row.get("Készpénzállomány (M Ft)", row.get("cash"))),
-        "burn": number(row.get("Havi cash burn (M Ft)", row.get("burn"))),
-        "runway": number(row.get("Runway (hónap)", row.get("runway"))),
-        "debt": number(row.get("Adósság (M Ft)", row.get("debt"))),
-        "churn": number(row.get("Ügyféllemorzsolódás (%)", row.get("churn"))),
-    }
+    lookup: dict[str, Any] = {}
+    for header, value in row.items():
+        lookup.setdefault(header_key(header), value)
+    return {c.key: text_value(lookup, c) if c.kind == "text" else number_value(lookup, c) for c in COLUMNS}
+
+
+def column_dictionary() -> list[dict[str, str]]:
+    return [
+        {"key": c.key, "english": c.english, "hungarian": c.hungarian, "type": c.kind, "unit": c.unit, "description": c.description}
+        for c in COLUMNS
+    ]
 
 
 def clamp(value: float) -> float:
@@ -190,6 +233,11 @@ def settings_status():
     return {"provider": "Google Gemini", "configured": bool(os.getenv("GEMINI_API_KEY")), "model": MODEL}
 
 
+@app.get("/api/columns")
+def columns():
+    return {"count": len(COLUMNS), "data": column_dictionary()}
+
+
 @app.post("/api/startups/import")
 async def import_startups(file: UploadFile = File(...)):
     global startups, last_import
@@ -281,9 +329,12 @@ async def answer_with_gemini(question: str):
     if client is None:
         raise HTTPException(status_code=503, detail="A Gemini API nincs konfigurálva. Állítsd be a GEMINI_API_KEY változót a .env fájlban, és telepítsd a google-genai csomagot.")
     context = [{k: s.get(k) for k in ("id", "name", "sector", "revenue2025", "growth", "grossMargin", "ebitda", "ebitdaMargin", "funding", "valuation", "cash", "burn", "runway", "debt", "customers", "churn", "score", "risk")} for s in startups]
-    prompt = ("Te egy pénzügyi elemző asszisztens vagy. Kizárólag az alábbi feltöltött szintetikus startup-adatokból dolgozz. "
-              "Ne találj ki adatot; hiányzó adatnál jelezd. A pontszám döntéstámogató becslés, nem befektetési tanács. "
-              "Válaszolj magyarul, számokkal és indoklással.\n\nADATOK JSON-BAN:\n" + json.dumps(context, ensure_ascii=False) + "\n\nKÉRDÉS:\n" + question)
+    dictionary = "\n".join(f"{c.key}: {c.english} / {c.hungarian}" + (f" [{c.unit}]" if c.unit else "") for c in COLUMNS)
+    prompt = ("You are a financial analyst assistant. Work only from the synthetic startup data below. "
+              "Never invent data; say so when something is missing. The score is a decision support estimate, not investment advice. "
+              "Answer in the same language as the question, with numbers and reasons.\n\n"
+              "FIELDS (key: English name / Hungarian name [unit]):\n" + dictionary +
+              "\n\nDATA IN JSON:\n" + json.dumps(context, ensure_ascii=False) + "\n\nQUESTION:\n" + question)
     try:
         response = client.models.generate_content(model=MODEL, contents=prompt)
         return {"answer": response.text or "Nem érkezett szöveges válasz.", "model": MODEL}
